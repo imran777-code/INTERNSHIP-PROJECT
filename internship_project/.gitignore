@@ -1,0 +1,17 @@
+*.pyc
+__pycache__/
+*.sqlite3
+.env
+venv/
+env/
+media/
+staticfiles/
+.DS_Store
+*.html_scraped
+apikey.txt
+scratch/
+index_scraped.html
+signup_scraped.html
+after_signup.html
+logged_in_page.html
+history.html

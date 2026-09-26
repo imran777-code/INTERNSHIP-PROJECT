@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trailmark — AI Career & Study Guide</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%232F4B3C%22/><circle cx=%2250%22 cy=%2250%22 r=%2210%22 fill=%22%23E2632A%22/></svg>">
+
+<meta property="og:title" content="Trailmark — AI Career & Study Guidance">
+<meta property="og:description" content="Ask questions, get a roadmap, check your resume, close your skill gaps, and practice interviews — one trail, every waypoint you need.">
+<meta name="theme-color" content="#F6F3EA" id="theme-color-meta">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+<script>
+    (function () {
+        var saved = localStorage.getItem("trailmark-theme");
+        var theme = saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+    })();
+</script>
+
+<style>
+    @view-transition { navigation: auto; }
+
+    :root {
+        --bg: #F6F3EA; --surface: #FFFFFF; --ink: #1E2B22; --ink-soft: #4A594E;
+        --pine: #2F4B3C; --pine-light: #45654F; --blaze: #E2632A; --blaze-dark: #C24F1D;
+        --moss: #7C9083; --line: #DED7C4; --focus: #2E6FEE; --alert: #C1483A;
+        --font-display: 'Fraunces', serif; --font-body: 'Inter', sans-serif;
+        --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    [data-theme="dark"] {
+        --bg: #16211C; --surface: #1E2B22; --ink: #F2F0E8; --ink-soft: #B9C4BB;
+        --pine: #8FBBA0; --pine-light: #A8CDBA; --blaze: #F0A15C; --blaze-dark: #F5C27A;
+        --moss: #6B8577; --line: #33443B; --focus: #6FA8FF; --alert: #E07362;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { transition: background 200ms ease, color 200ms ease; animation: page-fade-in 200ms ease; }
+    @keyframes page-fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0; background: var(--bg); color: var(--ink);
+        font-family: var(--font-body); line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--pine); }
+    ::selection { background: var(--blaze); color: #fff; }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; border: 2px solid var(--bg); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--moss); }
+
+    /* ---------- Navbar ---------- */
+    .tabnav {
+        display: flex; align-items: center; justify-content: space-between;
+        max-width: 1100px; margin: 0 auto; padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--line);
+    }
+    .tabnav.is-scrolled {
+        position: sticky; top: 0; z-index: 90;
+        background: color-mix(in srgb, var(--surface) 90%, transparent);
+        backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    .tabnav-brand {
+        display: flex; align-items: center; gap: 0.5rem;
+        font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: var(--pine);
+    }
+    .tabnav-tabs { display: flex; gap: 1.75rem; }
+    .tabnav-tab {
+        background: none; border: none; cursor: pointer;
+        font-family: var(--font-body); font-weight: 600; font-size: 0.9rem;
+        color: var(--ink-soft); padding: 0.3rem 0; text-decoration: none;
+        border-bottom: 2px solid transparent; transition: color 150ms ease, border-color 150ms ease;
+    }
+    .tabnav-tab.is-active, .tabnav-tab:hover { color: var(--pine); border-color: var(--blaze); }
+    .tabnav-user { display: flex; align-items: center; gap: 1rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft); }
+    .tabnav-user button, .tabnav-user .theme-toggle {
+        background: none; border: 1px solid var(--line); color: var(--ink-soft);
+        padding: 0.4rem 0.9rem; border-radius: 8px; font-family: var(--font-mono);
+        font-size: 0.78rem; cursor: pointer;
+    }
+
+    .tab-panel { display: none; max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+    .tab-panel.is-active { display: block; }
+    .tab-panel-header { margin-bottom: 1.5rem; }
+    .tab-panel-header h1 { font-family: var(--font-display); font-size: 1.8rem; color: var(--pine); margin: 0 0 0.4rem; }
+    .tab-panel-header p { color: var(--ink-soft); margin: 0; }
+
+    .theme-toggle {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 30px; height: 30px; padding: 0 !important; border-radius: 8px;
+        transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+    }
+    .theme-toggle:hover { border-color: var(--blaze); color: var(--blaze); background: var(--bg); }
+    .theme-toggle svg { width: 16px; height: 16px; }
+
+    /* ---------- Dashboard hero ---------- */
+    .dash-hero { padding: 1rem 0 2.5rem; }
+    .dash-hero h1 {
+        font-family: var(--font-display); font-weight: 700;
+        font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.1;
+        color: var(--pine); margin: 0 0 0.75rem;
+    }
+    .dash-hero p { font-size: 1.05rem; color: var(--ink-soft); max-width: 52ch; margin: 0; }
+
+    .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 720px) { .dash-grid { grid-template-columns: 1fr; } }
+
+    .dash-card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+        padding: 1.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+        display: flex; flex-direction: column; transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+    .dash-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.08), 0 8px 20px rgba(0,0,0,0.06); }
+    .dash-card-icon {
+        width: 40px; height: 40px; border-radius: 10px; color: var(--blaze);
+        display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;
+    }
+    .dash-card-icon svg { width: 24px; height: 24px; }
+    .dash-card h2 { font-family: var(--font-display); font-size: 1.25rem; color: var(--pine); margin: 0 0 0.5rem; }
+    .dash-card p { color: var(--ink-soft); font-size: 0.92rem; margin: 0 0 1.25rem; flex: 1; }
+    .dash-card-btn {
+        align-self: flex-start; background: none; border: 1px solid var(--line); color: var(--ink);
+        font-family: var(--font-body); font-weight: 600; font-size: 0.88rem;
+        padding: 0.6rem 1.1rem; border-radius: 8px; cursor: pointer;
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        transition: border-color 150ms ease, background 150ms ease;
+    }
+    .dash-card-btn:hover { border-color: var(--blaze); background: var(--bg); }
+
+    .progress-ring-wrap {
+        display: flex; align-items: center; gap: 1rem;
+        margin-top: 1.5rem; margin-bottom: 2.5rem;
+        padding-top: 1.5rem; padding-bottom: 1.5rem;
+        border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line);
+    }
+    .progress-ring { width: 60px; height: 60px; transform: rotate(-90deg); flex-shrink: 0; }
+    .progress-ring-bg { fill: none; stroke: var(--line); stroke-width: 8; }
+    .progress-ring-fill { fill: none; stroke: var(--blaze); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
+    .progress-ring-text { display: flex; flex-direction: column; }
+    .progress-ring-percent { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: var(--pine); line-height: 1.1; }
+    .progress-ring-sub { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--moss); margin-top: 0.2rem; }
+
+    .card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+        padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    }
+    .card + .card { margin-top: 1rem; }
+
+    .field-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    input[type="text"], textarea, select {
+        font-family: var(--font-body); font-size: 0.95rem; color: var(--ink);
+        background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+        padding: 0.75rem 1rem; flex: 1; min-width: 200px;
+        transition: border-color 150ms ease;
+    }
+    textarea { width: 100%; resize: vertical; font-family: var(--font-body); }
+
+    input[type="text"]:focus, textarea:focus, select:focus, button:focus-visible {
+        outline: 2px solid var(--focus); outline-offset: 2px;
+    }
+
+    .dropzone {
+        position: relative; border: 2px dashed var(--line); border-radius: 14px;
+        padding: 2.25rem 1.5rem; text-align: center; cursor: pointer;
+        transition: border-color 200ms ease, background 200ms ease;
+    }
+    .dropzone:hover, .dropzone:focus-visible { border-color: var(--blaze); outline: none; }
+    .dropzone.drag-over { border-color: var(--focus); background: var(--bg); }
+    .dropzone-icon { color: var(--blaze); margin: 0 auto 0.75rem; display: block; }
+    .dropzone-check { display: none; margin: 0 auto 0.75rem; color: var(--pine); }
+    .dropzone-check circle { fill: none; stroke: currentColor; stroke-width: 2; }
+    .dropzone-check path {
+        fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+        stroke-dasharray: 30; stroke-dashoffset: 30;
+    }
+    .dropzone.has-file .dropzone-check { display: block; animation: draw-check 300ms ease forwards; }
+    .dropzone.has-file .dropzone-icon { display: none; }
+    @keyframes draw-check { to { stroke-dashoffset: 0; } }
+    .dropzone-label { color: var(--ink-soft); font-size: 0.9rem; margin: 0; }
+    .dropzone-label strong { color: var(--blaze); font-weight: 600; }
+    .dropzone-hint { color: var(--moss); font-size: 0.78rem; margin: 0.3rem 0 0; }
+    .dropzone-filename { margin: 0.6rem 0 0; font-family: var(--font-mono); font-size: 0.8rem; color: var(--pine); word-break: break-all; }
+    .dropzone-input { display: none; }
+
+    button {
+        font-family: var(--font-body); font-weight: 600; font-size: 0.92rem;
+        background: var(--blaze); color: #fff; border: none; border-radius: 10px;
+        padding: 0.75rem 1.4rem; cursor: pointer;
+        transition: background 0.15s ease, transform 0.1s ease;
+        white-space: nowrap; display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    button:hover:not(:disabled) { background: var(--blaze-dark); transform: translateY(-1px); }
+    button:active { transform: translateY(1px); }
+
+    .answer-block { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--line); }
+    .asked-question { font-size: 0.85rem; color: var(--ink-soft); margin: 0 0 0.9rem; }
+    .asked-question em { color: var(--pine); font-style: normal; font-weight: 600; }
+    .answer-label {
+        font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em;
+        text-transform: uppercase; color: var(--blaze); margin-bottom: 0.5rem; display: block;
+    }
+
+    .ai-content { color: var(--ink); font-size: 0.96rem; }
+    .ai-content p { margin: 0 0 0.85rem; }
+    .ai-content h1, .ai-content h2, .ai-content h3 { font-family: var(--font-display); color: var(--pine); margin: 1.2rem 0 0.5rem; }
+    .ai-content ul, .ai-content ol { margin: 0 0 0.9rem; padding-left: 1.3rem; }
+    .ai-content li { margin-bottom: 0.4rem; }
+
+    .field-note { font-family: var(--font-mono); font-size: 0.72rem; color: var(--moss); margin: 0.6rem 0 0; }
+
+    @media (max-width: 560px) {
+        .tabnav { flex-wrap: wrap; gap: 0.75rem; padding: 1rem; }
+        .tabnav-tabs { gap: 1rem; flex-wrap: wrap; order: 3; width: 100%; }
+        .tab-panel { padding: 1.5rem 1.25rem 3.5rem; }
+        .field-row { flex-direction: column; }
+        button { width: 100%; }
+    }
+</style>
+</head>
+<body>
+
+    <nav class="tabnav" id="tabnav">
+        <span class="tabnav-brand">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            Trailmark
+        </span>
+        <div class="tabnav-tabs">
+            <button type="button" class="tabnav-tab {% if active_tab == 'tab-dashboard' %}is-active{% endif %}" data-tab-target="tab-dashboard">Dashboard</button>
+            <button type="button" class="tabnav-tab {% if active_tab == 'tab-advisor' %}is-active{% endif %}" data-tab-target="tab-advisor">Advisor</button>
+            <button type="button" class="tabnav-tab {% if active_tab == 'tab-resume' %}is-active{% endif %}" data-tab-target="tab-resume">Resume</button>
+            <button type="button" class="tabnav-tab {% if active_tab == 'tab-skillgap' %}is-active{% endif %}" data-tab-target="tab-skillgap">Skill Gap</button>
+            <button type="button" class="tabnav-tab {% if active_tab == 'tab-interview' %}is-active{% endif %}" data-tab-target="tab-interview">Mock Interview</button>
+            <a href="{% url 'history' %}" class="tabnav-tab">History</a>
+        </div>
+        <div class="tabnav-user">
+            <span>{{ user.username }}</span>
+            <button type="button" class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle dark mode">
+                <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            </button>
+            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- Tab: Dashboard landing -->
+    <div class="tab-panel {% if active_tab == 'tab-dashboard' %}is-active{% endif %}" id="tab-dashboard">
+        <div class="dash-hero">
+            <h1>Navigate Your Tech Career with Confidence</h1>
+            <p>Trailmark is your personal AI-powered career companion. From resume reviews to mock interviews, we provide the tools you need to succeed.</p>
+        </div>
+
+        <div class="progress-ring-wrap">
+            <svg class="progress-ring" viewBox="0 0 100 100">
+                <circle class="progress-ring-bg" cx="50" cy="50" r="45"></circle>
+                <circle class="progress-ring-fill" cx="50" cy="50" r="45"
+                    style="stroke-dasharray: 282.74; stroke-dashoffset: {{ 282.74|add:0 }};"></circle>
+            </svg>
+            <div class="progress-ring-text">
+                <span class="progress-ring-percent">{{ explored_percent }}%</span>
+                <span class="progress-ring-sub">{{ explored_count }} of 4 waypoints explored</span>
+            </div>
+        </div>
+
+        <div class="dash-grid">
+            <div class="dash-card">
+                <div class="dash-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h2>AI Career Advisor</h2>
+                <p>Ask any career question and get personalized advice, learning roadmaps, and course recommendations.</p>
+                <button type="button" class="dash-card-btn" data-tab-target="tab-advisor">Get Started →</button>
+            </div>
+
+            <div class="dash-card">
+                <div class="dash-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </div>
+                <h2>Resume Review</h2>
+                <p>Upload your resume and get professional, actionable feedback powered by AI to land your dream job.</p>
+                <button type="button" class="dash-card-btn" data-tab-target="tab-resume">Get Started →</button>
+            </div>
+
+            <div class="dash-card">
+                <div class="dash-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                </div>
+                <h2>Skill Gap Analysis</h2>
+                <p>Compare your current skills against your target role and get a prioritized learning plan.</p>
+                <button type="button" class="dash-card-btn" data-tab-target="tab-skillgap">Get Started →</button>
+            </div>
+
+            <div class="dash-card">
+                <div class="dash-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                </div>
+                <h2>Mock Interviews</h2>
+                <p>Practice behavioral and technical questions in a simulated interactive interview.</p>
+                <button type="button" class="dash-card-btn" data-tab-target="tab-interview">Get Started →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: AI Advisor -->
+    <div class="tab-panel {% if active_tab == 'tab-advisor' %}is-active{% endif %}" id="tab-advisor">
+        <div class="tab-panel-header">
+            <h1>Ask a question</h1>
+            <p>Get direct career and study guidance from an AI assistant.</p>
+        </div>
+        <div class="card">
+            <form method="POST" action="{% url 'ask' %}">
+                {% csrf_token %}
+                <div class="field-row">
+                    <input type="text" name="question" placeholder="e.g. How do I become a Data Scientist?" required>
+                    <button type="submit">Ask AI</button>
+                </div>
+            </form>
+
+            {% if asked_question %}
+                <div class="answer-block">
+                    {% if asked_question.messages %}
+                        {% for msg in asked_question.messages %}
+                            {% if msg.role == 'user' %}
+                                <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 0.8rem 1rem; margin-top: 1rem;">
+                                    <p class="asked-question" style="margin: 0;"><strong>Q:</strong> <em>{{ msg.text }}</em></p>
+                                </div>
+                            {% else %}
+                                <div style="margin-top: 0.75rem; padding-left: 0.5rem;">
+                                    <span class="answer-label">AI Advice & Guidance</span>
+                                    <div class="ai-content">{{ msg.text|safe }}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p class="asked-question">Q: <em>{{ asked_question.question_text }}</em></p>
+                        <span class="answer-label">AI Advice & Roadmap</span>
+                        <div class="ai-content">{{ asked_question.answer_text|safe }}</div>
+                    {% endif %}
+
+                    <!-- Follow-up Question Form -->
+                    <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px dashed var(--line);">
+                        <span class="answer-label" style="color: var(--pine); margin-bottom: 0.6rem;">💬 Ask a Follow-up Question</span>
+                        <form method="POST" action="{% url 'ask_followup' asked_question.id %}">
+                            {% csrf_token %}
+                            <div class="field-row">
+                                <input type="text" name="followup_question" placeholder="e.g. Which online courses or projects do you recommend for this?" required>
+                                <button type="submit" style="background: var(--pine);">Send Follow-up</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Tab: Resume Review -->
+    <div class="tab-panel {% if active_tab == 'tab-resume' %}is-active{% endif %}" id="tab-resume">
+        <div class="tab-panel-header">
+            <h1>Resume Review</h1>
+            <p>Upload your PDF or DOCX resume to get actionable, AI-powered feedback.</p>
+        </div>
+        <div class="card">
+            <form method="POST" action="{% url 'resume' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="dropzone" id="dropzone-resume" tabindex="0">
+                    <svg class="dropzone-check" viewBox="0 0 48 48" width="40" height="40"><circle cx="24" cy="24" r="20"/><path d="M15 24l7 7 11-12"/></svg>
+                    <svg class="dropzone-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4M8 8l4-4 4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                    <p class="dropzone-label">Drag & drop your resume, or <strong>browse</strong></p>
+                    <p class="dropzone-hint">Accepts PDF or DOCX</p>
+                    <p class="dropzone-filename"></p>
+                    <input type="file" name="resume_file" accept=".pdf,.docx" class="dropzone-input" id="file-input-resume" required>
+                </div>
+                <div class="field-row" style="margin-top: 0.9rem;">
+                    <button type="submit">Analyze Resume</button>
+                </div>
+            </form>
+
+            {% if resume_result %}
+                <div class="answer-block">
+                    <p class="asked-question">File: <em>{{ resume_result.original_filename }}</em></p>
+                    <span class="answer-label">AI Feedback</span>
+                    <div class="ai-content">{{ resume_result.feedback_html|safe }}</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Tab: Skill Gap Analysis -->
+    <div class="tab-panel {% if active_tab == 'tab-skillgap' %}is-active{% endif %}" id="tab-skillgap">
+        <div class="tab-panel-header">
+            <h1>Find your skill gap</h1>
+            <p>Resume vs. target role — see exactly what's missing.</p>
+        </div>
+        <div class="card">
+            <form method="POST" action="{% url 'skill_gap' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="dropzone" id="dropzone-skill-gap" tabindex="0">
+                    <svg class="dropzone-check" viewBox="0 0 48 48" width="40" height="40"><circle cx="24" cy="24" r="20"/><path d="M15 24l7 7 11-12"/></svg>
+                    <svg class="dropzone-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4M8 8l4-4 4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+                    <p class="dropzone-label">Drag & drop your resume, or <strong>browse</strong></p>
+                    <p class="dropzone-hint">Accepts PDF or DOCX</p>
+                    <p class="dropzone-filename"></p>
+                    <input type="file" name="skill_gap_resume" accept=".pdf,.docx" class="dropzone-input" id="file-input-skill-gap" required>
+                </div>
+                <div class="field-row" style="margin-top: 0.9rem;">
+                    <select name="skill_gap_role">
+                        {% for role in roles %}
+                            <option value="{{ role }}">{{ role }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <p class="field-note">Upload your resume, pick the role you're aiming for, and see exactly what's missing.</p>
+                <div class="field-row">
+                    <button type="submit">Find My Skill Gap</button>
+                </div>
+            </form>
+
+            {% if skill_gap_result %}
+                <div class="answer-block">
+                    <p class="asked-question">Target Role: <em>{{ skill_gap_result.target_role }}</em></p>
+                    <span class="answer-label">Missing Skills & Analysis</span>
+                    <div class="ai-content">{{ skill_gap_result.analysis_html|safe }}</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Tab: Mock Interview -->
+    <div class="tab-panel {% if active_tab == 'tab-interview' %}is-active{% endif %}" id="tab-interview">
+        <div class="tab-panel-header">
+            <h1>Mock Interview Simulator</h1>
+            <p>Practice realistic interview questions tailored to your dream role.</p>
+        </div>
+        <div class="card">
+            {% if not interview_session or interview_session.is_completed %}
+                <form method="POST" action="{% url 'interview_start' %}">
+                    {% csrf_token %}
+                    <div class="field-row">
+                        <select name="interview_role">
+                            {% for role in roles %}
+                                <option value="{{ role }}">{{ role }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Start Mock Interview</button>
+                    </div>
+                </form>
+            {% else %}
+                <div class="answer-block" style="margin-top: 0; padding-top: 0; border: none;">
+                    <span class="answer-label">Target Role: {{ interview_session.target_role }}</span>
+                    <h3 style="margin-top: 0.5rem; color: var(--pine);">Question: {{ interview_session.current_question }}</h3>
+                    
+                    <form method="POST" action="{% url 'interview_answer' interview_session.id %}">
+                        {% csrf_token %}
+                        <p style="margin-top: 1rem;"><label style="font-size: 0.85rem; color: var(--ink-soft);">Your Answer:</label></p>
+                        <textarea name="user_answer" rows="4" placeholder="Type your answer here..." required></textarea>
+                        <div class="field-row" style="margin-top: 0.9rem;">
+                            <button type="submit">Submit Answer</button>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+
+            {% if interview_session and interview_session.qna_history %}
+                <div class="answer-block">
+                    <span class="answer-label">Previous Q&A History</span>
+                    {% for item in interview_session.qna_history %}
+                        <div style="background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; margin-bottom: 0.8rem;">
+                            <p style="margin: 0 0 0.4rem; font-weight: 600; color: var(--pine);">Q: {{ item.question }}</p>
+                            <p style="margin: 0 0 0.6rem; color: var(--ink-soft); font-size: 0.92rem;">A: {{ item.user_answer }}</p>
+                            <div class="ai-content">{{ item.feedback|safe }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        (function () {
+            var allTabTriggers = document.querySelectorAll('[data-tab-target]');
+            var panels = document.querySelectorAll('.tab-panel');
+            var navTabs = document.querySelectorAll('.tabnav-tab[data-tab-target]');
+
+            function activateTab(targetId) {
+                navTabs.forEach(function (t) { t.classList.remove('is-active'); });
+                panels.forEach(function (p) { p.classList.remove('is-active'); });
+                var navTab = document.querySelector('.tabnav-tab[data-tab-target="' + targetId + '"]');
+                if (navTab) navTab.classList.add('is-active');
+                var panel = document.getElementById(targetId);
+                if (panel) panel.classList.add('is-active');
+                window.scrollTo({ top: 0, behavior: 'auto' });
+            }
+
+            allTabTriggers.forEach(function (el) {
+                el.addEventListener('click', function () {
+                    activateTab(el.dataset.tabTarget);
+                });
+            });
+        })();
+
+        // Dark mode
+        (function () {
+            var STORAGE_KEY = "trailmark-theme";
+            var html = document.documentElement;
+            var btn = document.getElementById("theme-toggle-btn");
+            var icon = document.getElementById("theme-icon");
+
+            var sunPath = '<path d="M12 3a6 6 0 1 0 9 9 9 9 0 1 1-9-9Z"/>';
+            var moonPath = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+
+            function updateIcon() {
+                var isDark = html.getAttribute("data-theme") === "dark";
+                icon.innerHTML = isDark ? moonPath : sunPath;
+            }
+
+            if (btn) {
+                btn.addEventListener("click", function () {
+                    var next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+                    html.setAttribute("data-theme", next);
+                    localStorage.setItem(STORAGE_KEY, next);
+                    updateIcon();
+                });
+            }
+            updateIcon();
+        })();
+
+        // Dropzones
+        (function () {
+            function wireDropzone(zoneId, inputId) {
+                var zone = document.getElementById(zoneId);
+                var input = document.getElementById(inputId);
+                if (!zone || !input) return;
+
+                var filenameEl = zone.querySelector(".dropzone-filename");
+
+                function showFile(name) {
+                    filenameEl.textContent = name;
+                    zone.classList.add("has-file");
+                }
+
+                zone.addEventListener("click", function () { input.click(); });
+                input.addEventListener("change", function () {
+                    if (input.files[0]) showFile(input.files[0].name);
+                });
+            }
+            wireDropzone("dropzone-resume", "file-input-resume");
+            wireDropzone("dropzone-skill-gap", "file-input-skill-gap");
+        })();
+    </script>
+</body>
+</html>
